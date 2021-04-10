@@ -61,13 +61,14 @@ package
 		public function as_setConfig(menuData:Object) : void
 		{
 			_settings = menuData;
+			initControls();
 		}
 		
 		private function onLoadedCompleted(event:LibraryLoaderEvent) : void
 		{
 			App.instance.loaderMgr.removeEventListener(LibraryLoaderEvent.LOADED, onLoadedCompleted);
 			_isLibrariesLoaded = true;
-			initControls();
+			//initControls();
 		}
 
 		private function onPlayButtonClick() : void
@@ -90,12 +91,11 @@ package
 
 		private function initControls() : void
 		{
-            getDropdownMenuData();
-			createSoundModesMenu(_settings.soundModes);
-			createGenderSwitchMenu(_settings.genderSwitch);
-			createNationsMenu(_settings.nations);
-			createSoundEventsMenu(_settings.events);
-			createPlayButton();
+            createSoundModesMenu(_settings.soundModes);
+            createGenderSwitchMenu(_settings.genderSwitch);
+            createNationsMenu(_settings.nations);
+            createSoundEventsMenu(_settings.events);
+            createPlayButton();
             //createScrollingList(_settings.soundModes);
             window.title = "Sound Test";
 		}

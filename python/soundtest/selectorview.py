@@ -27,37 +27,20 @@ class SelectorView(View):
         ]
         self.__nations = list(nations.NAMES)
         self.__readConfig()
-
-    def __onLogGui(self, logType, msg, *kargs):
-        _logger.debug('%s.GUI: %r, %r', str(logType), msg, kargs)
-
-    def __onLogGuiFormat(self, logType, msg, *kargs):
-        _logger.debug('%s.GUI: %s', str(logType), msg % kargs)
-
-    def afterCreate(self):
-        self.addExternalCallback('debug.LOG_GUI', self.__onLogGui)
-        self.addExternalCallback('debug.LOG_GUI_FORMAT', self.__onLogGuiFormat)
-
-    def _populate(self):
-        _logger.debug('SelectorView._populate')
-        super(SelectorView, self)._populate()
+        self.onCreate += self.beforeCreate
 
     def __readConfig(self):
         sec = ResMgr.openSection(self.__CFG_SECTION_PATH)
         events = []
-        #print sec.keys()
         for eventSec in sec.values():
-            #print eventSec.keys()
             for category in ('voice', ):
                 soundSec = eventSec[category]
                 if soundSec is not None:
-                    #print soundSec.readString('wwsound')
                     events.append(soundSec.readString('wwsound'))
         self.__events = events
-        #print events
         return
 
-    def getDropdownMenuData(self):
+    def beforeCreate(self, pyEntity):
         settings = {
             'soundModes':       self.__soundModes,
             'genderSwitch':     self.__genderSwitch,
@@ -71,8 +54,8 @@ class SelectorView(View):
         genderSwitch = data.genderSwitch.data
         nation  = data.nation
         soundEvent = data.soundEvent
-        _logger.info('playSoundEvent: genderSwitch=%s, nation=%s, soundMode=%s, soundEvent=%s',
-                genderSwitch, nation, soundMode, soundEvent)
+        _logger.info('playSoundEvent: soundMode=%s, genderSwitch=%s, nation=%s, soundEvent=%s',
+                soundMode, genderSwitch, nation, soundEvent)
         isFrontline = soundEvent.startswith('vo_eb_')
         _FrontLineSounds.onChange(isFrontline)
         g_instance = SoundGroups.g_instance
