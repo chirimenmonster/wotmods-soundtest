@@ -1,25 +1,17 @@
 # -*- coding: utf-8 -*-
 
 import logging
-from functools import partial
 
-import BigWorld
 import ResMgr
-import GUI
-import WWISE
 import nations
 import SoundGroups
-from gui.Scaleform.framework import ViewSettings, ViewTypes, ScopeTemplates
 from gui.Scaleform.framework.entities.View import View
 
-from gui.IngameSoundNotifications import IngameSoundNotifications
 from gui.game_control.epic_meta_game_ctrl import _FrontLineSounds
 
 from modsettings import MOD_NAME
 
-#for name in [ 'gui.Scalform.framework.entities.View', 'gui.Scaleform.Flash' ]:
-#    logging.getLogger(name).setLevel(logging.DEBUG)
-_logger = logging.getLogger(__name__)
+_logger = logging.getLogger(MOD_NAME)
 _logger.setLevel(logging.DEBUG)
 
 
@@ -41,15 +33,13 @@ class SelectorView(View):
 
     def __onLogGuiFormat(self, logType, msg, *kargs):
         _logger.debug('%s.GUI: %s', str(logType), msg % kargs)
-        print '%s.GUI2: %s', str(logType), msg % kargs
 
     def afterCreate(self):
-        print 'afterCreate'
         self.addExternalCallback('debug.LOG_GUI', self.__onLogGui)
         self.addExternalCallback('debug.LOG_GUI_FORMAT', self.__onLogGuiFormat)
 
     def _populate(self):
-        BigWorld.logInfo(MOD_NAME, '_populate', None)
+        _logger.debug('SelectorView._populate')
         super(SelectorView, self)._populate()
 
     def __readConfig(self):
@@ -81,13 +71,15 @@ class SelectorView(View):
         genderSwitch = data.genderSwitch.data
         nation  = data.nation
         soundEvent = data.soundEvent
-        print 'playSoundEvent: [genderSwitch={}, nation={}, soundMode={}, soundEvent={}]'.format(genderSwitch, nation, soundMode, soundEvent)
+        _logger.info('playSoundEvent: genderSwitch=%s, nation=%s, soundMode=%s, soundEvent=%s',
+                genderSwitch, nation, soundMode, soundEvent)
         isFrontline = soundEvent.startswith('vo_eb_')
         _FrontLineSounds.onChange(isFrontline)
         g_instance = SoundGroups.g_instance
         savedCurrentMode = g_instance.soundModes.currentMode
         savedCurrentNationalPreset = g_instance.soundModes.currentNationalPreset
-        print 'playSoundEvent: [currentMode={}, currentNationalPreset={}]'.format(savedCurrentMode, savedCurrentNationalPreset)
+        _logger.info('playSoundEvent: currentMode=%s, currentNationalPreset=%s',
+                savedCurrentMode, savedCurrentNationalPreset)
         g_instance.soundModes.setCurrentNation(nation, genderSwitch)
         g_instance.soundModes.setMode(soundMode)
         g_instance.playSound2D(soundEvent)
@@ -96,9 +88,9 @@ class SelectorView(View):
         #_FrontLineSounds.onChange(False)
 
     def onTryClosing(self):
-        print 'onTryClosing'
+        _logger.debug('onTryClosing')
         return True
 
     def onWindowClose(self):
-        print 'onWindowClose'
+        _logger.debug('onWindowClose')
         self.destroy()
