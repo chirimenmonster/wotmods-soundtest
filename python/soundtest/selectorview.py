@@ -21,7 +21,7 @@ class SelectorView(View):
     def __init__(self):
         super(SelectorView, self).__init__()
         self.__soundModes = sorted(SoundGroups.g_instance.soundModes.modes.keys())
-        self.__genderSwicth = [
+        self.__genderSwitch = [
             { 'label': 'male', 'data': SoundGroups.CREW_GENDER_SWITCHES.MALE },
             { 'label': 'female', 'data': SoundGroups.CREW_GENDER_SWITCHES.FEMALE }
         ]
@@ -60,7 +60,7 @@ class SelectorView(View):
     def getDropdownMenuData(self):
         settings = {
             'soundModes':       self.__soundModes,
-            'genderSwitch':     self.__genderSwicth,
+            'genderSwitch':     self.__genderSwitch,
             'nations':          self.__nations,
             'events':           self.__events
         }
